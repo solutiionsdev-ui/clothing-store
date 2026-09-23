@@ -1,0 +1,640 @@
+/* `source("../")` limits class detection to `src/` (this file lives in src/app).
+   Without it Tailwind v4 scans the whole repo — including obsidian/ and .claude/,
+   where documented class *patterns* like duration-[var(--duration-*)] parse as
+   real candidates and emit CSS warnings. Docs are not a source of utilities. */
+@import "tailwindcss" source("../");
+
+/* ---------------------------------------------------------------------------
+   TIER 1 — PRIMITIVES  (`--raw-*`)
+   Raw literal values. The only tier allowed to contain a hex/px/ms literal.
+   Never referenced in markup, never bound into @theme. Rename freely.
+   Grammar: --raw-<category>-<name>[-<shade>]
+   See obsidian/frontend/design-system.md → "Token naming convention".
+   --------------------------------------------------------------------------- */
+:root {
+  --raw-color-white: #ffffff;
+  --raw-color-neutral-100: #ededed;
+  --raw-color-neutral-900: #171717;
+  --raw-color-neutral-950: #0a0a0a;
+
+  --raw-duration-fast: 150ms;
+  --raw-duration-normal: 250ms;
+
+  /* --- Hero primitives — Figma "Get Layers" frame 902:304 (1440×800) ------ */
+  --raw-color-black: #000000;
+  /* Lattice cell fill sampled off the frame background. */
+  --raw-color-neutral-925: #0d0d0d;
+  --raw-color-white-25: rgb(255 255 255 / 0.25);
+  --raw-color-white-40: rgb(255 255 255 / 0.4);
+
+  /* Type ramp, in rem against the 1440 design base (16px root). */
+  --raw-text-size-75: 0.75rem; /* 12px — badge captions */
+  --raw-text-size-112: 1.125rem; /* 18px — nav & marker copy */
+  --raw-text-size-125: 1.25rem; /* 20px — lede & CTA */
+  --raw-text-size-81: 0.8125rem; /* 13px — footer consent line (1931:2743) */
+  --raw-text-size-87: 0.875rem; /* 14px — tag chips (1923:2042) */
+  --raw-text-size-162: 1.625rem; /* 26px — product card title (1923:2039) */
+  --raw-text-size-250: 2.5rem; /* 40px — headline below the frame breakpoint */
+  --raw-text-size-312: 3.125rem; /* 50px — headline on a tablet; see below */
+  --raw-text-size-437: 4.375rem; /* 70px — section headline (1748:1102) */
+
+  --raw-leading-tight: 0.9; /* frame line-height on single-line 18/20px copy */
+  --raw-leading-caption: 1.1; /* frame line-height on copy that wraps */
+  --raw-leading-headline: 0.8; /* frame line-height on the 70px headline */
+  /* Both frames set -0.02em: -0.24px at 12px, -1.4px at 70px. */
+  --raw-tracking-tight: -0.02em;
+
+  /* Background lattice geometry: 10px pitch, 2px gap between cells. */
+  --raw-size-lattice-pitch: 0.625rem;
+  --raw-size-lattice-gap: 0.125rem;
+  /* Reach of the pointer highlight. Tightened from the shader's original 340px
+     on the client's call: at that radius the glow read as a wash over a third
+     of the screen rather than as cells answering the cursor. */
+  --raw-size-lattice-reach: 12rem; /* 192px — the highlight's radius */
+  --raw-size-stage-fade: 17rem; /* 272px — see `hero-stage-mask` for its shape */
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 2 — SEMANTIC  (role names, no namespace prefix)
+   Purpose, not appearance. Always `var(--raw-*)` — never a literal.
+   This is the themeable layer: dark mode overrides happen HERE, which is why
+   these are separate from the @theme bindings below (see the note there).
+   Grammar: --<role>[-<variant>][-<state>]
+   --------------------------------------------------------------------------- */
+:root {
+  --background: var(--raw-color-white);
+  --foreground: var(--raw-color-neutral-900);
+
+  --duration-fast: var(--raw-duration-fast);
+  --duration-normal: var(--raw-duration-normal);
+
+  /* --- Hero roles ---------------------------------------------------------
+     The hero is a fixed dark canvas by design, so these roles are deliberately
+     NOT overridden in the prefers-color-scheme block below. */
+  --hero-surface: var(--raw-color-black);
+  --hero-surface-lattice: var(--raw-color-neutral-925);
+  --hero-content: var(--raw-color-white);
+  /* Secondary copy — the frames set body prose at 40% and index numerals at
+     the same 25% the rules are drawn in. Two roles, one primitive: `rule` is
+     an edge, `faint` is ink, and they are free to diverge later. */
+  --hero-content-muted: var(--raw-color-white-40);
+  --hero-content-faint: var(--raw-color-white-25);
+  --hero-rule: var(--raw-color-white-25);
+
+  /* **A floor, in px, under the four smallest roles.**
+     Above 1024 the page is the 1440 frame scaled by viewport width, and that
+     scaling applies to type as faithfully as to everything else — which is right
+     until it isn't. At a 1024 viewport the frame renders at 71%, and 12 frame
+     units becomes 8.5px: the badge captions, the consent line and the tag chips
+     stopped being readable while remaining perfectly proportional.
+     `max()` pins them at 12px and leaves everything larger alone. At 1440 the
+     floor is exactly the caption's own size, so nothing there moves at all —
+     verified against the recorded frame. Only the roles that actually fall below
+     it carry this; the display sizes must keep scaling. */
+  --hero-text-caption: max(var(--raw-text-size-75), 12px);
+  --hero-text-body: max(var(--raw-text-size-112), 12px);
+  --hero-text-lede: var(--raw-text-size-125);
+  --hero-text-fine: max(var(--raw-text-size-81), 12px);
+  --hero-text-chip: max(var(--raw-text-size-87), 12px);
+  --hero-text-title: var(--raw-text-size-162);
+  --hero-text-display: var(--raw-text-size-437);
+  /* No frame exists under 1024, so the headline needs a step of its own there
+     — 70px would eat the whole column on a phone. See ADR-0029. */
+  --hero-text-display-compact: var(--raw-text-size-250);
+  /* The middle of the three headline sizes, for 640–1023 where the layout
+     is flow but the screen is no longer a phone. Its value is not chosen
+     freely: at 1024 the frame takes over and draws the 70px headline at
+     the frame's own scale, 70 * 1024 / 1440 = 49.8px. Matching that to
+     50px makes the one place the page changes layout regime the one place
+     the headline does not visibly jump. Below 640 it steps down to 40. */
+  --hero-text-display-tablet: var(--raw-text-size-312);
+
+  --hero-leading-display: var(--raw-leading-tight);
+  --hero-leading-headline: var(--raw-leading-headline);
+  --hero-leading-caption: var(--raw-leading-caption);
+  /* Same 1.1 as `caption`, different role: copy that wraps at reading size. */
+  --hero-leading-prose: var(--raw-leading-caption);
+  --hero-tracking-caption: var(--raw-tracking-tight);
+  --hero-tracking-display: var(--raw-tracking-tight);
+
+  --hero-lattice-pitch: var(--raw-size-lattice-pitch);
+  --hero-lattice-gap: var(--raw-size-lattice-gap);
+  /* The half-gap bleed the frame draws at the top-left edge. A token because
+     three utilities set it and it has to round with the gap — see below. */
+  --hero-lattice-offset: calc(var(--hero-lattice-gap) / -2);
+  --hero-lattice-reach: var(--raw-size-lattice-reach);
+  /* How far the product's canvas dissolves into the page at its bottom edge. */
+  --hero-stage-fade: var(--raw-size-stage-fade);
+  /* Published each frame by `hero-pointer.ts`, in viewport pixels. Parked well
+     off-screen so nothing is lit before the pointer has ever been seen. */
+  --hero-pointer-x: -100vw;
+  --hero-pointer-y: -100vh;
+  --hero-pointer-lag-x: -100vw;
+  --hero-pointer-lag-y: -100vh;
+}
+
+/* **The lattice has to land on whole pixels, or it stops being squares.**
+ *
+ * Pitch and gap are rem — they are frame units, so the grid scales with the
+ * frame like everything else — and a rem is not a whole number of pixels at
+ * most window sizes: at 1920 the pitch resolves to 13.33px and the gap to
+ * 2.67px. A repeating gradient with fractional stops is antialiased *per bar*,
+ * and because the fraction only comes back round every three cells the error
+ * repeats on a three-cell beat. That beat is the ripple running through the
+ * background — cells that read light, dark, light again across the screen, and
+ * a moire that crawls when anything moves over it.
+ *
+ * Rounding both to the device's own pixel grid makes every bar identical and
+ * every cell the same square. The cell ends up 10/13 of the pitch rather than
+ * the frame's 8/10 at some widths, which is a difference of a third of a pixel
+ * in a 13px cell and invisible; the ripple is not.
+ *
+ * Guarded, because `round()` is a comparatively recent addition: where it is
+ * missing the tokens keep their unrounded values and the grid is exactly what
+ * it was before. */
+@supports (width: round(1px, 1px)) {
+  :root {
+    --hero-lattice-pitch: round(var(--raw-size-lattice-pitch), 1px);
+    --hero-lattice-gap: round(var(--raw-size-lattice-gap), 1px);
+    --hero-lattice-offset: round(calc(var(--hero-lattice-gap) / -2), 1px);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--raw-color-neutral-950);
+    --foreground: var(--raw-color-neutral-100);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   THEME BINDINGS — map semantic tokens into Tailwind namespaces.
+   Every entry is exactly `--<tw-namespace>-<role>: var(--<role>)`.
+   `inline` is required: it inlines the var() into each utility, so the
+   dark-mode overrides on the Tier 2 tokens above cascade. Binding a literal
+   here instead would freeze the value and break theming.
+
+   Only these namespaces generate utilities (verified against tailwindcss
+   v4.3.3): --color-* --spacing-* --radius-* --leading-* --tracking-* --text-*
+   --font-* --ease-* --breakpoint-* --container-* --shadow-* --blur-* --animate-*
+   NOTE: there is NO --duration-* namespace in v4 — `duration-fast` compiles to
+   nothing. Durations stay Tier 2 only and are used as duration-[var(--duration-fast)].
+   --------------------------------------------------------------------------- */
+/**
+ * `lg` is **landscape and 1024 or wider**, not merely 1024 or wider.
+ *
+ * `lg` is not a size step in this project — it is the switch between two
+ * designs: ordinary flow below it, the 1440 frame at and above (ADR-0032). The
+ * frame is 1.8:1, so it only makes sense on a screen shaped roughly like one.
+ * A width test alone sent an iPad in portrait — 1024×1366, a very common
+ * device — into frame mode, where the composition scaled to 71% and filled the
+ * top 40% of the screen with 800px of empty lattice beneath it.
+ *
+ * A portrait tablet is closer to a large phone than to a desktop, and the flow
+ * layout is already built for narrow-and-tall. So the frame asks for landscape
+ * as well as width. 1024×768 and 1280×1024 still get it; 1024×1366 does not.
+ *
+ * Overriding the built-in variant rather than renaming it, so all 246 existing
+ * `lg:` usages keep meaning "the frame" and none of them had to be touched.
+ */
+@custom-variant lg (@media (min-width: 1024px) and (min-aspect-ratio: 1/1));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-onest);
+  --font-mono: var(--font-3270);
+
+  --color-hero-surface: var(--hero-surface);
+  --color-hero-surface-lattice: var(--hero-surface-lattice);
+  --color-hero-content: var(--hero-content);
+  --color-hero-content-muted: var(--hero-content-muted);
+  --color-hero-content-faint: var(--hero-content-faint);
+  --color-hero-rule: var(--hero-rule);
+
+  --text-hero-caption: var(--hero-text-caption);
+  --text-hero-body: var(--hero-text-body);
+  --text-hero-lede: var(--hero-text-lede);
+  --text-hero-fine: var(--hero-text-fine);
+  --text-hero-chip: var(--hero-text-chip);
+  --text-hero-title: var(--hero-text-title);
+  --text-hero-display: var(--hero-text-display);
+  --text-hero-display-compact: var(--hero-text-display-compact);
+  --text-hero-display-tablet: var(--hero-text-display-tablet);
+
+  --leading-hero-display: var(--hero-leading-display);
+  --leading-hero-headline: var(--hero-leading-headline);
+  --leading-hero-caption: var(--hero-leading-caption);
+  --leading-hero-prose: var(--hero-leading-prose);
+  --tracking-hero-caption: var(--hero-tracking-caption);
+  --tracking-hero-display: var(--hero-tracking-display);
+
+  /* Leading floor for clipped TextEngine reveals — see
+     obsidian/frontend/text-engine.md → "Alignment & line-height". */
+  --leading-display: 1.1;
+
+  --ease-entrance: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* **The canvas colour is taken from `html`, deliberately.**
+   With a background only on `body`, the browser propagates *that* to the page
+   canvas — and `--background` is the app's light surface. Everything the page
+   itself paints is dark, so nobody sees it until the surface it is painted on
+   is exposed: a rubber-band scroll past either end, a pinch, the gutter beside
+   an over-scrolled page. On a tablet that reads as white flashing at the edge
+   of a black site. Naming the canvas here paints those areas in the page's own
+   surface; `body` keeps the app token for anything that is not this site. */
+html {
+  background-color: var(--hero-surface);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@layer base {
+  /* Adaptive scaling grid — two regimes, not three, and the split is the whole
+     idea. ADR-0024, revised.
+
+     **At and above 1024 the page reproduces the 1440x800 frame**, so the root
+     font-size is that frame's scale factor. Every rem in the `lg:` layout is a
+     frame unit, and one CSS rule makes the whole composition fill the viewport
+     — 71% of full size at 1024, 1:1 at 1440, and larger beyond, unbounded on
+     purpose since 1440 is the only desktop frame this project has.
+
+     **The scale is bound by whichever axis runs out first, not by the width
+     alone.** The frame is 1.8:1 and every screen in it is `h-200` — 50rem, the
+     frame's own 800 units — so a width-only scale makes the composition taller
+     than the window on any screen wider than 1.8:1, and the bottom of it is
+     simply cut off. That is not an edge case: a maximised browser on a
+     1920x1080 display is about 1920x950, an aspect of 2.02, where the frame
+     came out 1067 units tall in a 950-unit window and the hero's CTA and both
+     badges sat below the fold. Measured there, 45 elements crossed it.
+
+     So the height term: `16 * 100 / 800`vh, and the smaller of the two wins.
+     Below 1.8:1 the width binds and nothing about this rule changes; above it
+     the height binds, the frame is drawn at the size that fits and `mx-auto`
+     centres it, leaving a band of the page's own lattice down each side. The
+     alternative — letting the section keep the window's height while its
+     contents keep the frame's — is the drift ADR-0024 already rejected: the
+     pairs the frames draw level with each other come apart by exactly the
+     slack. A frame with a fixed aspect either scales to fit or is cropped.
+
+     `lvh`, not `vh` or `svh`, because the sections are `h-lvh` and the two
+     have to agree: a scale off the *small* viewport with sections off the
+     large one puts the slack back and re-opens the crop this closes.
+
+     **Below 1024 there is no frame to reproduce**, so the root font-size is a
+     plain 16px and the layout is ordinary responsive flow. Scaling here was
+     the original design and it was wrong in a way worth recording: a band
+     pinned to a base width is only correct *at* that base width and drifts
+     linearly away from it in both directions. The old three-band rule scaled
+     to 360 up to 640 and to 1024 above it, which meant a root font-size of
+     28.4px at 640 and 10.0px one pixel later — a 2.8× cliff mid-layout, with
+     headlines at 124px on a large phone and 8.8px card titles on a small
+     tablet. Nothing between 360, 1024 and 1440 was ever drawn correctly.
+
+     The one remaining discontinuity, at 1024, is deliberate: that is where the
+     page changes from flow to frame, so the two sides are different designs
+     and are not meant to match. It also fixes a real defect — the old rule gave
+     a 1024 viewport a 16px root *and* the `lg:` frame, so the 1440-wide
+     composition was drawn at full scale inside 1024px and everything past the
+     right edge, the collections lede among it, was simply off-screen.
+
+     Keep in sync with src/components/common/grid/grid.config.ts. */
+  html {
+    /* 16 * 100 / 1440 across, 16 * 100 / 800 down — the frame's scale factor
+       on each axis. The smaller one is the one that fits. */
+    font-size: min(1.111111vw, 2lvh);
+  }
+
+  /* Mirrors the `lg` variant exactly: anything that is not the frame gets the
+     plain root, including a landscape-less tablet above 1024. Keep the two
+     conditions identical — a mismatch would draw the flow layout at the frame's
+     scale, which is how the collections lede once ended up off-screen. */
+  @media (max-width: 1023.98px), (max-aspect-ratio: 0.9999/1) {
+    html {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer utilities {
+}
+
+/* Background lattice of the hero frame (Figma 902:305): cells of
+   `--hero-surface-lattice` on `--hero-surface`, separated by a `--hero-lattice-gap`
+   line every `--hero-lattice-pitch`. Half-gap offset reproduces the frame's
+   1px bleed at the top-left edge. Not expressible with utilities, and the
+   values are token-backed, so it lives here as a single-purpose helper. */
+@utility hero-lattice {
+  background-color: var(--hero-surface-lattice);
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    );
+  background-position: var(--hero-lattice-offset) var(--hero-lattice-offset);
+}
+
+/* Dissolves the product canvas into the page at its bottom edge.
+
+   Once the canvas has finished sticking it comes to rest over exactly the
+   details screen, so its bottom edge lands on the seam with the section below —
+   and the product, which the frame runs off the bottom of that screen, was
+   being sliced there by a hard horizontal line. In Figma the two blocks are
+   separate artboards and that cut is never seen; on a continuous page it reads
+   as a join. The colours here are mask alpha stops, not paint. */
+/**
+ * Dissolves the bottom edge of a product canvas where the box clips it.
+ *
+ * **The shape matters more than the length, and both extremes were wrong.** A
+ * mask makes the garment *translucent* rather than merely dim, so whatever is
+ * behind it reads straight through — and behind it is a 10px lattice. A linear
+ * 160px ramp is 50% transparent 80px up, which ghosted the grid across the whole
+ * lower body of the jacket. Cutting the ramp to 48px stopped that and replaced
+ * it with the thing the fade exists to prevent: a hard horizontal line where the
+ * jacket is sliced off, running the full width of the screen.
+ *
+ * So: **opaque for the first third, then a long even decay**. 272px of travel;
+ * the first 87 hold full density and the remaining 185 do the dissolving —
+ * lengthened from 192 on the client's call, the hand-off to the next screen
+ * still reading as an edge rather than a dissolve.
+ *
+ * An earlier attempt pushed almost all of the change into the last 30px. That
+ * kept the ghosting away, but it made the transition itself abrupt — measured
+ * on a 1920 screen the ramp was only 60px, which is short enough to read as the
+ * straight cut it exists to hide. **The band that dissolves has to be wide
+ * enough to look like dissolving**, and the way to keep the ghosting out of it
+ * is to spend the first third of the travel at full density rather than to
+ * shorten the ramp.
+ *
+ * A canvas the box does not clip should not carry this at all — see the FAQ
+ * stage, whose model comes to rest well clear of its own bottom edge.
+ */
+@utility hero-stage-mask {
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--hero-stage-fade)),
+    rgb(0 0 0 / 0.97) calc(100% - var(--hero-stage-fade) * 0.68),
+    rgb(0 0 0 / 0.82) calc(100% - var(--hero-stage-fade) * 0.52),
+    rgb(0 0 0 / 0.55) calc(100% - var(--hero-stage-fade) * 0.36),
+    rgb(0 0 0 / 0.26) calc(100% - var(--hero-stage-fade) * 0.20),
+    rgb(0 0 0 / 0.08) calc(100% - var(--hero-stage-fade) * 0.08),
+    transparent 100%
+  );
+}
+
+/* The pointer highlight, quantised to the lattice.
+
+   The glow layers are listed **last** so they paint underneath the two gap
+   gradients, and the gaps are opaque — the light therefore survives only inside
+   the cells and reads as squares coming up rather than as a soft blob. Two of
+   them: a tight one on the pointer and a slacker one trailing behind it, which
+   is what the shader this replaces used a lag uniform for.
+
+   Every surface draws it from the same two custom properties, in viewport
+   coordinates, so the page and the opaque panels standing on it light up in
+   step with no per-element geometry. */
+/**
+ * The pointer highlight, drawn into the lattice.
+ *
+ * **The falloff curve is what stops it reading as a blob**, not the radius. A
+ * plain `colour → transparent` radial is a linear cone: bright flat core, and a
+ * rim where it reaches zero that the eye finds and traces, so the whole thing
+ * reads as a patch stuck on top of the grid. Three things fix that and none of
+ * them is "make it dimmer":
+ *
+ * - a **convex** decay through explicit stops, so brightness falls fastest near
+ *   the middle and there is no flat core to see the edge of;
+ * - a second, much wider halo at a sixth of the strength, whose only job is to
+ *   dissolve the first one's rim into the page;
+ * - the same treatment on the trailing pair, which otherwise arrives as a
+ *   sharper second patch chasing the first.
+ *
+ * The two opaque bar layers are listed first, so they paint **over** the light
+ * and quantise it to the cells — the highlight is the grid brightening, never a
+ * lamp shining across it.
+ */
+@utility hero-lattice-glow {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    ),
+    radial-gradient(
+      circle var(--hero-lattice-reach) at var(--hero-pointer-x)
+        var(--hero-pointer-y),
+      rgb(255 255 255 / 0.07) 0%,
+      rgb(255 255 255 / 0.055) 26%,
+      rgb(255 255 255 / 0.034) 52%,
+      rgb(255 255 255 / 0.016) 74%,
+      rgb(255 255 255 / 0.005) 89%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle calc(var(--hero-lattice-reach) * 1.75) at var(--hero-pointer-x)
+        var(--hero-pointer-y),
+      rgb(255 255 255 / 0.017) 0%,
+      rgb(255 255 255 / 0.009) 48%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle calc(var(--hero-lattice-reach) * 1.2) at var(--hero-pointer-lag-x)
+        var(--hero-pointer-lag-y),
+      rgb(255 255 255 / 0.032) 0%,
+      rgb(255 255 255 / 0.014) 52%,
+      transparent 100%
+    );
+  background-position:
+    var(--hero-lattice-offset) var(--hero-lattice-offset),
+    var(--hero-lattice-offset) var(--hero-lattice-offset),
+    0 0,
+    0 0,
+    0 0;
+}
+
+/* An opaque lattice panel — the fill the details and technology frames put
+   behind their rows, and the FAQ frame behind its questions. Measured off the
+   frames' own renders: inside those boxes the median pixel is 13, the lattice
+   cell value, while just outside it is the product. They are not transparent
+   cards over the artwork; they knock it out. `fixed` attachment keeps the glow
+   in the viewport's frame, which is what puts every panel in phase with the
+   page behind it. */
+/**
+ * Enlarges a control's touch target without moving anything.
+ *
+ * The frame draws for a cursor: nav labels resolve to an 11px-tall box, the
+ * collections view switches to 12×12, the newsletter's arrow to 10×6. Those are
+ * fine for a mouse and unusable with a thumb, and simply making them bigger
+ * would be redrawing the design. So the *hit* area grows and the drawing does
+ * not — an empty `::before` stretched past the element's own box, which the
+ * browser hit-tests but nobody sees.
+ *
+ * Tune per use with `--tap-y` / `--tap-x`; keep the vertical inset at or under
+ * half the gap to the neighbour, or two targets start fighting over the same
+ * pixels. Applied `max-lg:` — the frame has a cursor and does not need it.
+ *
+ * It does inflate the element's own `scrollWidth`, being an absolutely
+ * positioned child hanging outside the box. Harmless here — measured, the page
+ * gains no sideways scroll at any width — but do not put this inside anything
+ * that scrolls horizontally, and do not read `scrollWidth` on a control that
+ * carries it and conclude its text is cut.
+ */
+/* **Even lines on a narrow column.** Below `sm` a paragraph is twenty-nine
+   characters wide, and greedy wrapping — fill the line, break, repeat — leaves
+   a rag that swings by a third and breaks words at their hyphens. The browser's
+   own balancer sets the whole paragraph at once and picks the line set with the
+   least difference between lines; measured here it took a page of mobile prose
+   from 18 lines ending on a short word to 5, and removed the "ALL-/DAY" break
+   outright. It applies to short paragraphs only — Chrome stops at six lines —
+   which is exactly what this page has. */
+@utility prose-even {
+  text-wrap: balance;
+}
+
+@utility tap-area {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--tap-y, 0.75rem) * -1) calc(var(--tap-x, 0.5rem) * -1);
+  }
+}
+
+/**
+ * The lattice as a surface: cells, bars and the pointer highlight, in one
+ * element.
+ *
+ * **The page itself wears this**, not only the cards — it is the surface the
+ * cards are imitating, and drawing it here is what lets the page own exactly
+ * one grid. The bars are `scroll`, so they are anchored to the element's own
+ * box and travel with the document; the three highlight layers are `fixed`, so
+ * they stay under the cursor wherever the page has got to. Because the bars are
+ * listed first they paint over the light and quantise it into cells.
+ *
+ * One value per layer, and the count matters: a short list is *repeated*, so
+ * dropping a value silently hands the last layer `scroll` and pulls the
+ * highlight out of the viewport's frame.
+ *
+ * A transform on the element breaks the `fixed` half — it becomes the
+ * containing block — so do not put this on anything a spring is animating.
+ */
+@utility hero-lattice-panel {
+  background-color: var(--hero-surface-lattice);
+  @apply hero-lattice-glow;
+  background-attachment: scroll, scroll, fixed, fixed, fixed;
+}
+
+/**
+ * The page's own surface, as two layers instead of one painted element.
+ *
+ * **Same picture, same order, a fifth of the cost** ([[decisions-log]] ADR-0047).
+ * `hero-lattice-panel` is right for a card and wrong for the page: its three
+ * highlight layers are `background-attachment: fixed`, and a fixed background
+ * cannot be scrolled by the compositor — it has to be *repainted* every frame,
+ * over the element's whole visible area. On a card that area is a card. On the
+ * page shell it is the entire viewport, every frame, for the length of the
+ * document. Measured at 4× CPU throttle, that one element held the content
+ * sections at 16ms frames; splitting it takes them to 8.5.
+ *
+ * So the shell keeps only its colour, and the two halves it used to paint
+ * become elements with the positioning each actually wanted:
+ *
+ * - `hero-lattice-beam` is the pointer highlight, `position: fixed`. It was
+ *   viewport-anchored before and still is — but as a composited layer that
+ *   scrolling does not touch, rather than as a background that scrolling
+ *   invalidates.
+ * - `hero-lattice-bars` is the grid, `position: absolute` across the shell.
+ *   It was `scroll`-attached to this same box before, so it is the same
+ *   rectangle with the same origin.
+ *
+ * **Order is load-bearing and it is now tree order.** The bars must paint over
+ * the light — that is what quantises the highlight into cells instead of
+ * letting a lamp shine across the grid — so the beam element comes first and
+ * the bars second, and both must stay ahead of the page's content. Swapping
+ * them does not error; it just stops looking like the page.
+ */
+@utility hero-lattice-shell {
+  background-color: var(--hero-surface-lattice);
+}
+
+@utility hero-lattice-beam {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      circle var(--hero-lattice-reach) at var(--hero-pointer-x)
+        var(--hero-pointer-y),
+      rgb(255 255 255 / 0.07) 0%,
+      rgb(255 255 255 / 0.055) 26%,
+      rgb(255 255 255 / 0.034) 52%,
+      rgb(255 255 255 / 0.016) 74%,
+      rgb(255 255 255 / 0.005) 89%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle calc(var(--hero-lattice-reach) * 1.75) at var(--hero-pointer-x)
+        var(--hero-pointer-y),
+      rgb(255 255 255 / 0.017) 0%,
+      rgb(255 255 255 / 0.009) 48%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle calc(var(--hero-lattice-reach) * 1.2) at var(--hero-pointer-lag-x)
+        var(--hero-pointer-lag-y),
+      rgb(255 255 255 / 0.032) 0%,
+      rgb(255 255 255 / 0.014) 52%,
+      transparent 100%
+    );
+}
+
+/**
+ * No pointer, no beam. `PointerField` bails on exactly this query and never
+ * sets the variables, so the gradients stay parked at `-100vw/-100vh` and paint
+ * nothing — but a full-viewport fixed element still costs a composited layer to
+ * hold nothing at all. Matching the query the field itself uses keeps the two
+ * from drifting apart.
+ */
+@media (hover: none) and (pointer: coarse) {
+  .hero-lattice-beam {
+    display: none;
+  }
+}
+
+@utility hero-lattice-bars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--hero-surface) 0 var(--hero-lattice-gap),
+      transparent var(--hero-lattice-gap) var(--hero-lattice-pitch)
+    );
+  background-position: var(--hero-lattice-offset) var(--hero-lattice-offset);
+}
+
+@layer components {
+}
