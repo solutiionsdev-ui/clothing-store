@@ -14,12 +14,6 @@ import type { HeroContent } from "@/views/home/hero";
  * no routes behind them yet.
  */
 export const homeHero: HeroContent = {
-  logo: {
-    src: "/assets/ui/logo-mark.png",
-    alt: "Get Layers",
-    width: 75,
-    height: 30,
-  },
   nav: [
     { label: "SHOP", href: "#" },
     {
@@ -73,14 +67,6 @@ export const homeHero: HeroContent = {
   subject: {
     src: "/assets/hero/hero-jacket.glb",
     label: "Oversized weather-resistant thermal jacket, iridescent black",
-  },
-  backdrop: {
-    src: "/assets/hero/hero-wordmark.png",
-    alt: "",
-    // Intrinsic size of the supplied plate — 4× the 1257×671 the frame draws it
-    // at, so `next/image` has real pixels to serve on a dense display.
-    width: 5028,
-    height: 2684,
   },
 };
 
@@ -401,12 +387,6 @@ export const homeFaq: FaqContent = {
  * it; both are flagged rather than invented.
  */
 export const homeFooter: FooterContent = {
-  logo: {
-    src: "/assets/ui/logo-mark.png",
-    alt: "Get Layers",
-    width: 99,
-    height: 40,
-  },
   columns: [
     {
       heading: { label: "SHOP", href: "#" },
@@ -440,7 +420,7 @@ export const homeFooter: FooterContent = {
     placeholder: "Your e-mail",
     consent: "I AGREE TO RECEIVE UPDATES.",
   },
-  copyright: "© 2026 ARTEFAKT. ALL RIGHTS RESERVED.",
+  copyright: "© 2026 YOUR ONLINE STORE. ALL RIGHTS RESERVED.",
   social: [
     { label: "INSTAGRAM", href: "#" },
     { label: "YOUTUBE", href: "#" },

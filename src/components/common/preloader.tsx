@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { BrandMark } from "@/components/ui/brand-mark";
 import { subscribeToTicker } from "@/lib/animation/ticker";
 
 /**
@@ -133,13 +133,9 @@ export const Preloader = () => {
           sizes it sat as a small island in the middle of a tablet screen with
           a 12px line under it. */}
       <div className="flex w-64 flex-col items-center gap-6 max-lg:w-80 max-lg:gap-8">
-        <Image
-          src="/assets/ui/logo-mark.png"
-          alt=""
-          width={300}
-          height={120}
-          priority
-          className={`h-12 w-auto object-contain max-lg:h-16 transition-transform duration-700 ease-entrance motion-reduce:transition-none ${
+        <BrandMark
+          decorative
+          className={`h-12 w-auto text-hero-content max-lg:h-16 transition-transform duration-700 ease-entrance motion-reduce:transition-none ${
             done ? "scale-105" : "scale-100"
           }`}
         />

@@ -1,6 +1,6 @@
 ---
 tags: [meta, decision]
-updated: 2026-08-28
+updated: 2026-09-23
 ---
 
 # Decisions Log (ADRs)
@@ -14,6 +14,31 @@ decisions on top, continuing the numbering. Amending an inherited decision is
 fine; write a new ADR that says so rather than editing the old one.
 
 Template: [[templates/adr-note]].
+
+---
+
+## ADR-0048 — Brand marks are generated text placeholders, not image files
+
+**Status:** Accepted · 2026-09-23
+
+**Decision.** The logo is `<BrandMark>`, an inline-SVG text mark read from
+`src/lib/brand.ts`. The favicon, Apple touch icon and default share card are
+generated at build time by the `icon.tsx`, `apple-icon.tsx` and
+`opengraph-image.tsx` file conventions in `src/app/`. No brand raster lives
+in `public/`, and `generate-page-metadata.ts` declares no icons and emits
+`og:image` only for a page-supplied `ogImage`.
+
+**Why.** The template's artwork carried another brand's name in every image —
+logo, hero plate, icons, share card — so renaming the site left it wearing the
+old brand. With no replacement artwork, text generated from one source means a
+rename is a one-line change and nothing can drift out of step.
+
+**When building.** Change the name in `brand.ts`, never in a component. When
+real artwork arrives, swap `BrandMark`'s body and replace the three
+`src/app/` files with static images of the same names — Next's file
+conventions accept either. A route segment's own `opengraph-image` file
+overrides both the default card and any `ogImage` passed to the metadata
+helper.
 
 ---
 

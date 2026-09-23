@@ -19,7 +19,7 @@ Rules for handling configuration and secrets.
 
 | Name | Scope | Purpose |
 |------|-------|---------|
-| `NEXT_PUBLIC_SITE_URL` | public | Site origin (no trailing slash). Drives canonical URLs, OG/Twitter tags, `robots.txt`, `sitemap.xml`, JSON-LD. Falls back to `http://localhost:3000` when unset — **set it in production**. See [[seo-metadata]]. |
+| `NEXT_PUBLIC_SITE_URL` | public | Site origin (no trailing slash). Drives canonical URLs, OG/Twitter tags, `robots.txt`, `sitemap.xml`, JSON-LD. Falls back to `https://$NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL` on Vercel, else `http://localhost:3000`, when unset — **set it in production**. See [[seo-metadata]]. |
 | `CONTACT_ENDPOINT` | server-only | Optional upstream the `/api/contact` route forwards leads to (CRM / webhook). When unset, submissions are logged server-side. See [[api-architecture]]. |
 
 Documented in `.env.example` (committed). Validated by `src/env.ts` (zod):

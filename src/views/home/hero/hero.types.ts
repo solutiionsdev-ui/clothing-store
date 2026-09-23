@@ -52,7 +52,6 @@ export interface HeroModel {
 }
 
 export interface HeroContent {
-  logo: HeroImage;
   nav: HeroNavItem[];
   cart: HeroLink;
   markerStart: HeroMarkerContent;
@@ -64,6 +63,4 @@ export interface HeroContent {
   badgeEnd: HeroBadgeContent;
   /** The product, rendered live from a glTF model. */
   subject: HeroModel;
-  /** The brand wordmark, sitting far back behind the product. */
-  backdrop: HeroImage;
 }

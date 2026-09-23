@@ -5,13 +5,6 @@
  * (file WINXFW2nTM7zYwd5dGgm1T, node 1748:1161) — see DESIGN-MAP.md.
  */
 
-export interface FooterImage {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-}
-
 export interface FooterLink {
   label: string;
   href: string;
@@ -30,7 +23,6 @@ export interface FooterNewsletter {
 }
 
 export interface FooterContent {
-  logo: FooterImage;
   columns: FooterColumn[];
   newsletter: FooterNewsletter;
   copyright: string;

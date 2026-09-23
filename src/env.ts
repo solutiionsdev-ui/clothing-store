@@ -32,9 +32,18 @@ const serverSchema = z.object({
   CONTACT_ENDPOINT: optionalUrl(),
 });
 
+/**
+ * On Vercel, fall back to the project's production domain (a bare host,
+ * exposed automatically as a system env var) so canonicals, OG tags and the
+ * sitemap never point at localhost when `NEXT_PUBLIC_SITE_URL` is unset.
+ */
+const vercelProductionHost = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+
 /** Public env — safe to read anywhere (server or client). */
 export const publicEnv = publicSchema.parse({
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_SITE_URL:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (vercelProductionHost ? `https://${vercelProductionHost}` : undefined),
 });
 
 let cachedServerEnv: z.infer<typeof serverSchema> | undefined;

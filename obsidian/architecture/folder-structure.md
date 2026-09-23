@@ -52,7 +52,8 @@ src/
 │   ├── robots.ts           # → /robots.txt
 │   ├── sitemap.ts          # → /sitemap.xml
 │   ├── globals.css         # Tailwind v4 config + design tokens
-│   └── favicon.ico
+│   ├── icon.tsx, apple-icon.tsx, opengraph-image.tsx
+│   │                       # Generated favicon / touch icon / share card
 │
 ├── data/mocks/             # Placeholder content per page, passed in via props
 │   └── home.ts             # Hero copy + asset descriptors
@@ -99,8 +100,7 @@ src/
 
 ```
 public/
-├── favicon.ico, *-icon-*.png, manifest.json, browserconfig.xml, open-graph.png
-│                            # site-level meta / PWA / SEO assets — stay at the root
+├── manifest.json            # PWA manifest — stays at the root (icons are generated)
 └── assets/                  # site content assets (images, video, …)
     └── <section>/           # one folder per section that uses them
 ```
@@ -109,8 +109,8 @@ public/
 > Content assets used **on the site** (images, videos, …) live under
 > `public/assets/`, and **each section gets its own folder** — e.g.
 > `public/assets/hero/`, `public/assets/footer/`. Reference them by absolute
-> path (`/assets/hero/bg.webp`). Meta/PWA/SEO assets (favicons, icons,
-> `manifest.json`, `open-graph.png`) stay at the `public/` root.
+> path (`/assets/hero/bg.webp`). `manifest.json` stays at the `public/` root;
+> icons and the share card are generated from `src/app/` (see [[seo-metadata]]).
 
 > [!warning] Replacing an asset in place serves the **old** one
 > A `public/` path is not content-hashed, so swapping the file behind a name
@@ -148,7 +148,8 @@ public/
 | Mock/placeholder data | `src/data/mocks/<page-name>.ts` (create folder as needed) |
 | A third-party client init | `lib/` |
 | A site content asset (image, video) | `public/assets/<section>/` — one folder per section |
-| A favicon / icon / OG / manifest asset | `public/` root |
+| A favicon / icon / OG image | `src/app/icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx` |
+| The PWA manifest | `public/manifest.json` |
 
 ## Do-not-modify zones
 

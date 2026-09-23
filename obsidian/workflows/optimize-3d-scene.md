@@ -75,9 +75,8 @@ text in `.claude/skills/optimize-3d-scene/SKILL.md`; reference code in
 
 ## Mapping onto this starter
 
-The skill's canonical implementations live in a separate workspace
-(`getlayers-projects/` — `helion`, `mycelia`, `stride`, `clarix`) and are **not
-part of this repo**. Several of them already have an equivalent here — use the
+The skill's canonical implementations live in a separate workspace and are
+**not part of this repo**. Several of them already have an equivalent here — use the
 local one rather than porting a second copy:
 
 | Skill pattern | Use in this project |

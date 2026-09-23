@@ -5,12 +5,12 @@ a section without a node ID cannot be verified against its design later.
 
 **Figma file key:** `WINXFW2nTM7zYwd5dGgm1T`
 **Source URLs:**
-- Hero — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=902-304
-- Details (block 2) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=1748-1102
-- Collections (block 3) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=1748-1152
-- Footer (block 6) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=1748-1161
-- FAQ (block 5) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=1748-1158
-- Technology (block 4) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T/Get-Layers?node-id=1748-1155
+- Hero — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=902-304
+- Details (block 2) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=1748-1102
+- Collections (block 3) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=1748-1152
+- Footer (block 6) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=1748-1161
+- FAQ (block 5) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=1748-1158
+- Technology (block 4) — https://www.figma.com/design/WINXFW2nTM7zYwd5dGgm1T?node-id=1748-1155
   (states 2–5: `1924:2259`, `1924:2285`, `1924:2311`, `1924:2337`)
 **Frame width:** 1440 × 800 — the design base width, matching the `1440` adaptive-grid
 breakpoint, so design px map 1:1 to the `--spacing` scale (`n px` → `n/4`).
@@ -19,9 +19,9 @@ breakpoint, so design px map 1:1 to the `--spacing` scale (`n px` → `n/4`).
 |---------|---------|------------------|------------|-------|
 | Hero | `902:304` | `views/home/hero` → `Hero` | `hero-lattice` on `--hero-surface` | Holds the page `h1` |
 | ├ lattice plate | `902:305` | `@utility hero-lattice` in `globals.css` | — | Exported empty; rebuilt from sampled pixels (10px pitch, 2px gap, `#0d0d0d` cells) |
-| ├ backdrop | `902:306` | `HeroStage` | — | **Brand wordmark** at 8% opacity, 1257×671 at (92, 84). Reads as mountains at that opacity; it is not. |
+| ├ backdrop | `902:306` | `HeroStage` | — | Wordmark at 8% opacity, 1257×671 at (92, 84). **Now the site name as a text mark** (`BrandMark`) — the frame's artwork was removed. |
 | ├ subject | `902:302` | `HeroStage` → `HeroSubject` | — | Live glTF model in the frame's 650×650 box at (394, 55) |
-| ├ logo | `902:309` | `HeroHeader` | — | 75×30 at (40, 24) |
+| ├ logo | `902:309` | `HeroHeader` | — | 75×30 at (40, 24). **Now a one-line text mark** (`BrandMark`) — the frame's artwork was removed. |
 | ├ nav | `902:341`–`902:347` | `HeroHeader` | — | gap 64; caret `902:345` at +113px from the label |
 | ├ cart | `1923:2152` | `HeroHeader` | — | left 1302, top 24 |
 | ├ lede (`h1`) | `902:308` | `HeroTitle` | — | top 646, 20px/0.9, two hand-set lines |
@@ -56,7 +56,7 @@ breakpoint, so design px map 1:1 to the `--spacing` scale (`n px` → `n/4`).
 | ├ question rows | `1924:2451`, `1924:2429`, `1924:2456`, `1924:2466`, `1924:2461` | `Faq` | opaque lattice + `--hero-rule` border | 674 wide at (726, 136), 114 tall, gap 12. Question cell 195 wide, a 32-gap either side of a full-height rule, answer takes the rest |
 | └ question widths | `1924:2453` etc. | — | — | 175 on every row **except 02, which is 195** — that is what keeps its question on two lines |
 | Footer | `1748:1161` | `views/home/footer` → `Footer` | page `hero-lattice` | Block 6. **350 tall, not 800** — the only frame in the file whose content does not fill the artboard, and Figma renders the node at 350 |
-| ├ logo | `1929:2587` | `Footer` | — | The header's own asset at 99×40 (the header draws it 75×30), at (40, 24) |
+| ├ logo | `1929:2587` | `Footer` | — | The header's text mark (`BrandMark`) at (40, 24) |
 | ├ nav columns | `1931:2698` | `Footer` | — | Four columns at (297, 24), 120 wide with a 48 gap — lefts land on 297 / 465 / 633 / 801 |
 | ├ newsletter | `1931:2755` | `FooterNewsletterForm` | `--hero-content` border | 245 wide at (1155, 24); the box is 14px copy with the arrow, the consent line 13px at 25% |
 | ├ rule | `1930:2615` | `Footer` | — | 1px at 25%, 1360 wide at (40, 286). **Drawn, not exported** |
@@ -66,16 +66,13 @@ breakpoint, so design px map 1:1 to the `--spacing` scale (`n px` → `n/4`).
 
 ## Assets
 
-Downloaded to `public/assets/hero/`. The raster plates and the two badge icons
+Downloaded to `public/assets/hero/`. The two badge icons
 came from the client; the arrow, corner bracket and nav caret were exported from
 the frame.
 
 | File | Node | Native size |
 |------|------|-------------|
 | `hero-jacket.glb` | `902:302` | Draco glTF, 62.7k verts — supplied by the client, not a Figma export |
-| `hero-wordmark.png` | `902:306` | 5028×2684 (4× the 1257×671 the frame draws). **Chrome finish** — verified against Figma's own export of the node. |
-| `hero-wordmark-dark.png` | — | 5028×2684 — dark finish of the same wordmark. **Not the frame's plate**; unused. |
-| `hero-logo.png` | `902:309` | 300×120 (4× the 75×30 the frame draws) |
 | `hero-icon-globe.svg` | `902:315` | 37×23 |
 | `hero-icon-target.svg` | `902:327` | 23×23 |
 | `hero-arrow.svg` | `902:322` | 10×5.77 |
@@ -256,25 +253,4 @@ against the text. Raising the plate's opacity can never bring it over the jacket
   the same height. `hero-subject.tsx` frames on height but clamps against
   `MAX_WIDTH_FRACTION`, so a wide model backs the camera off instead of being
   silently cropped at the canvas edge.
-- **The plate's finish is load-bearing, and it is easy to get wrong.** Two
-  finishes of the wordmark exist and they share an alpha mask, so they look
-  interchangeable — they are not. Measured against Figma's export of `902:306`:
-
-  | Artwork | Brightest / mean | At the frame's 8% over the lattice (13) |
-  |---------|------------------|------------------------------------------|
-  | Figma's export of `902:306` | 251 / 93.6 | — |
-  | `hero-wordmark.png` (chrome) | 251.3 / 94.2 | **33** — matches the reference's measured peak of 32 |
-  | `hero-wordmark-dark.png` | 20 / 9.3 | 14.6 — invisible against 13 |
-
-  The first `Background Image.png` supplied was the dark one, which is why the
-  plate read as missing. Compare **luminance**, not alpha, when checking a plate:
-  alpha alone said the dark file matched.
-
-  **Verified against the frame.** Rebuilding the background exactly as the browser
-  composites it — black canvas, lattice cells, then the chrome plate at 8% — and
-  sampling the plate-only band (x 100–395, y 95–335, clear of the product and the
-  edge copy) gives `max 32 / p99 28 / median 13`, identical to Figma's own render
-  of `902:304` in the same band. The node is still `opacity-8`; the plate carries
-  an `sRGB` chunk and no embedded ICC profile, so nothing is being colour-managed
-  away. At 8% this plate is *meant* to be a ghost — peak RGB 32 on a 13 lattice.
 - **Nav, cart and CTA link to `#`** — no routes exist behind them yet.

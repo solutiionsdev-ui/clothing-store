@@ -1,12 +1,31 @@
 ---
 tags: [frontend, components, stable]
-updated: 2026-08-20
+updated: 2026-09-23
 ---
 
 # Catalog — UI Primitives
 
 Files in `src/components/ui/` — design-system primitives: stateless, no provider
 dependencies, reusable across features. Placement rules: [[component-conventions]].
+
+## `<BrandMark>` — `brand-mark.tsx`
+
+The site's name as a text logo — a **placeholder until real logo artwork
+exists**. An inline SVG, so it scales to its box like an image: size it by
+height (`h-4 w-auto`) or fill a box (`h-full w-full`). The lines come from
+`brandWordmark` (`src/lib/brand.ts`); the longest line is set to the measure with
+`textLength` and shorter lines centre under it. Colour is `currentColor`,
+the face `font-mono`.
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `variant` | `"inline" | "stacked"` | `"stacked"` | One line (header, menu, footer) or two (hero backdrop, preloader) |
+| `decorative` | `boolean` | `false` | `aria-hidden` instead of `role="img"` + `aria-label` |
+| `className` | `string` | — | Size and colour |
+
+Used by `HeroHeader`, `HeroMenu`, `Footer`, `Preloader` and `HeroWordmark`
+(which draws it twice for the torch/sheen effect). To swap in artwork, change
+this one component.
 
 ## `<ScrambleText>` — `scramble-text.tsx`
 

@@ -122,7 +122,6 @@ export const HomeView = () => (
           the frame draws no such band, hence `max-lg:`. */}
       <div className="sticky top-0 z-50 max-lg:hero-lattice-panel max-lg:border-b max-lg:border-hero-rule lg:h-0">
         <HeroHeader
-          logo={homeHero.logo}
           nav={homeHero.nav}
           cart={homeHero.cart}
         />

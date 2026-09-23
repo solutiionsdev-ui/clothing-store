@@ -233,7 +233,7 @@ Two faces, both loaded in `src/app/layout.tsx` and exposed as CSS variables on
 | Face | Source | Variable | Binding | Used by |
 |------|--------|----------|---------|---------|
 | **Onest** | `next/font/google` | `--font-onest` | `--font-sans` | Site default |
-| **IBM 3270** | `next/font/local` (`src/app/fonts/3270-Regular.otf`) | `--font-3270` | `--font-mono` | The Get Layers hero frame |
+| **IBM 3270** | `next/font/local` (`src/app/fonts/3270-Regular.otf`) | `--font-3270` | `--font-mono` | The hero frame (Figma `902:304`) |
 
 IBM 3270 is monospaced at an **0.54em** advance, which two things depend on:
 

@@ -1,17 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
-import type { CSSProperties } from "react";
 
 import { Spring } from "@/components/animation/springs/spring";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { subscribeToTicker } from "@/lib/animation/ticker";
 
 import { acquireHeroPointer } from "./hero-pointer";
-import type { HeroImage } from "./hero.types";
 
 export interface HeroWordmarkProps {
-  plate: HeroImage;
   /** Resting opacity of the plate. */
   opacity: number;
 }
@@ -33,9 +30,8 @@ const REVEAL_SHARE = 0.42;
 /**
  * The sheen: a band of the plate at full strength, travelling across it.
  *
- * The plate's artwork is chromed lettering, and chrome is only chrome when
- * something moves over it. On the frame that is the cursor. Below it there is
- * no cursor, so the same aperture is driven across the mark on its own —
+ * The mark only catches the eye when something moves over it. On the frame
+ * that is the cursor. Below it there is no cursor, so the same aperture is driven across the mark on its own —
  * a slanted band rather than the pointer's disc, because a sweep is what reads
  * as a highlight travelling over metal, while a spot reads as a torch.
  *
@@ -53,7 +49,7 @@ const SWEEP_STRENGTH = 1;
  * What the band does to the copy it carries.
  *
  * Lifting the plate from its resting fifth to full opacity is the whole trick
- * on the frame, where the mark is 1157px of chromed lettering. At a phone's
+ * on the frame, where the mark is 1157px across. At a phone's
  * size the same lift moved the mark's own pixels by ten levels out of 255 —
  * measured — because the artwork under the band is dark to begin with. The
  * band brightens what it carries, so it reads as light *on* the metal rather
@@ -91,21 +87,6 @@ const DRIFT_FRAME_MS = 1000 / 30;
 const DISC_MASK =
   "radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,0.75) 45%, transparent 100%)";
 
-/**
- * How much larger than its own canvas the mark is drawn below the frame.
- *
- * The supplied plate is 5028×2684 and the artwork inside it is 4639 wide —
- * 3.9% of transparent margin at each side. Fitted by its canvas, the lettering
- * therefore stopped ~15px short of the screen at both ends and read as a small
- * object floating in a wide box. Scaled by the margin, the *ink* reaches the
- * edge instead, which is what "full width" was supposed to mean, and nothing
- * visible is cropped: what overhangs is the empty margin.
- *
- * Both copies — the plate and the one the sheen carries — take it, or the band
- * would reveal a differently-sized mark.
- */
-const INK_SCALE = 5028 / 4639;
-
 const HOVER_QUERY = "(hover: hover) and (pointer: fine)";
 const FRAME_QUERY = "(min-width: 1024px) and (min-aspect-ratio: 1/1)";
 
@@ -129,9 +110,9 @@ const prefersReducedMotion = () =>
  * either. Without WebGL or with reduced motion the base plate is untouched — the
  * torch is an enhancement, never the thing that makes the wordmark visible.
  */
-export const HeroWordmark = ({ plate, opacity }: HeroWordmarkProps) => {
+export const HeroWordmark = ({ opacity }: HeroWordmarkProps) => {
   const boxRef = useRef<HTMLDivElement>(null);
-  const baseRef = useRef<HTMLImageElement>(null);
+  const baseRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
 
@@ -294,7 +275,6 @@ export const HeroWordmark = ({ plate, opacity }: HeroWordmarkProps) => {
       // backdrop. Contained, it is never cut; bled past the section's margins,
       // it takes the full width of the screen, which is the largest it can be
       // and still show its ends.
-      style={{ "--ink-scale": INK_SCALE } as CSSProperties}
       // **Centred by auto margins, not by a left coordinate and not by a
       // transform.** The frame's x of 142 against a 1157-wide plate is the
       // centre line of a 1440 canvas to half a unit; on a wider canvas only
@@ -302,18 +282,13 @@ export const HeroWordmark = ({ plate, opacity }: HeroWordmarkProps) => {
       // this element's `transform` and `-translate-x-1/2` would be overwritten.
       className="absolute inset-0 z-0 max-lg:-inset-x-5 lg:inset-x-0 lg:top-1/2 lg:bottom-auto lg:mx-auto lg:-mt-72.25 lg:h-154.25 lg:w-289.25"
     >
-      <div ref={boxRef} className="relative h-full w-full overflow-hidden">
-        <Image
-          ref={baseRef}
-          src={plate.src}
-          alt={plate.alt}
-          width={plate.width}
-          height={plate.height}
-          priority
-          sizes="87vw"
-          className="h-full w-full object-cover max-lg:scale-[var(--ink-scale)] max-lg:object-contain"
-          style={{ opacity }}
-        />
+      <div
+        ref={boxRef}
+        className="relative h-full w-full overflow-hidden text-hero-content"
+      >
+        <div ref={baseRef} className="h-full w-full" style={{ opacity }}>
+          <BrandMark decorative className="h-full w-full" />
+        </div>
 
         <div
           ref={windowRef}
@@ -331,17 +306,7 @@ export const HeroWordmark = ({ plate, opacity }: HeroWordmarkProps) => {
           }}
         >
           <div ref={innerRef} className="absolute top-0 left-0">
-            <Image
-              src={plate.src}
-              alt=""
-              width={plate.width}
-              height={plate.height}
-              priority
-              sizes="87vw"
-              aria-hidden
-              className="max-w-none object-cover max-lg:scale-[var(--ink-scale)] max-lg:object-contain"
-              style={{ width: "100%", height: "100%" }}
-            />
+            <BrandMark decorative className="h-full w-full" />
           </div>
         </div>
       </div>

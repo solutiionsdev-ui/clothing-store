@@ -2,9 +2,13 @@
  * @fileoverview Standardised metadata + viewport generators for pages.
  *
  * `generateMetadata` builds a Next.js `Metadata` object — basic meta tags,
- * OpenGraph, Twitter cards, canonical URL, icons, robots. `metadataBase` is
+ * OpenGraph, Twitter cards, canonical URL, robots. `metadataBase` is
  * always set (from `siteConfig`) so relative URLs (OG image, canonical)
  * resolve to absolute — required by social scrapers.
+ *
+ * Icons and the default share image are not declared here: they come from the
+ * `icon.tsx`, `apple-icon.tsx` and `opengraph-image.tsx` file conventions in
+ * `src/app/`, which Next wires into the head itself.
  *
  * `generateViewport` builds the `Viewport` export. `themeColor` lives here, not
  * in `Metadata` — Next deprecated it on the metadata object.
@@ -19,7 +23,11 @@ interface MetadataProps {
   description?: string;
   /** Canonical path (e.g. `/about`) or absolute URL for this page. */
   url?: string;
-  /** Open Graph / Twitter image — path under `public/` or absolute URL. */
+  /**
+   * A 1200×630 share image for this page — path under `public/` or absolute
+   * URL. Omit to use the generated `opengraph-image`. A route segment's own
+   * `opengraph-image` file takes priority over this.
+   */
   ogImage?: string;
   twitterHandle?: string;
   author?: string;
@@ -30,7 +38,7 @@ export function generateMetadata({
   title = siteConfig.name,
   description = siteConfig.description,
   url = "/",
-  ogImage = siteConfig.ogImage,
+  ogImage,
   twitterHandle = siteConfig.twitterHandle,
   author = siteConfig.author,
   siteName = siteConfig.name,
@@ -52,9 +60,11 @@ export function generateMetadata({
       url,
       siteName,
       // These must match the real asset — scrapers lay the card out from the
-      // declared numbers, not from the file. `public/open-graph.png` is
-      // 1200×630, which is also the size every network prefers.
-      images: [{ url: ogImage, width: 1200, height: 630 }],
+      // declared numbers, not from the file. 1200×630 is the size every
+      // network prefers.
+      ...(ogImage
+        ? { images: [{ url: ogImage, width: 1200, height: 630 }] }
+        : {}),
       locale: "en_US",
       type: "website",
     },
@@ -64,17 +74,7 @@ export function generateMetadata({
       description,
       site: twitterHandle,
       creator: twitterHandle,
-      images: [ogImage],
-    },
-    icons: {
-      icon: [
-        { url: "/favicon.ico" },
-        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      ],
-      apple: [
-        { url: "/apple-icon-180x180.png", sizes: "180x180", type: "image/png" },
-      ],
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
     manifest: "/manifest.json",
     robots: {

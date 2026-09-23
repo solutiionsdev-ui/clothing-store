@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 
 import { Inview } from "@/components/animation/springs/in-view";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { ScrambleText } from "@/components/ui/scramble-text";
 
 import { FooterNewsletterForm } from "./footer-newsletter";
@@ -30,8 +30,7 @@ const FOCUS_RING =
  * where the frame's own header is absent, so nothing is skipped here; the
  * banner at the top of the page and this landmark are the page's two.
  *
- * The logo is the same asset the header uses, drawn larger — 99×40 against the
- * header's 75×30.
+ * The logo is the same text mark the header uses, in the frame's 40px row.
  */
 export const Footer = ({ content }: FooterProps) => (
   <footer className="relative w-full font-mono text-hero-content lg:h-87.5">
@@ -45,15 +44,9 @@ export const Footer = ({ content }: FooterProps) => (
     <div className="flex flex-col gap-10 px-5 py-16 max-lg:gap-8 max-lg:pt-12 max-lg:pb-5 lg:block lg:gap-0 lg:px-0 lg:py-0">
       <Link
         href="/"
-        className={`block h-13 w-32.5 lg:absolute lg:top-6 lg:left-10 lg:h-10 lg:w-24.75 ${FOCUS_RING}`}
+        className={`flex h-13 w-fit items-center lg:absolute lg:top-6 lg:left-10 lg:h-10 ${FOCUS_RING}`}
       >
-        <Image
-          src={content.logo.src}
-          alt={content.logo.alt}
-          width={content.logo.width}
-          height={content.logo.height}
-          className="h-full w-full object-contain"
-        />
+        <BrandMark variant="inline" className="h-5 w-auto lg:h-4" />
       </Link>
 
       <nav

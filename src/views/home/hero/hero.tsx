@@ -68,7 +68,7 @@ export const Hero = ({ content }: HeroProps) => (
         <HeroMarker align="end" lines={content.markerEnd.lines} />
       </div>
 
-      <HeroStage backdrop={content.backdrop} />
+      <HeroStage />
 
       {/* **The claim and its button are one thing, and the screen is divided
           between four, not five.** Below the frame the hero is a column: the

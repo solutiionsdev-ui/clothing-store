@@ -1,6 +1,6 @@
 ---
 tags: [meta, changelog]
-updated: 2026-08-28
+updated: 2026-09-23
 ---
 
 # Changelog
@@ -13,6 +13,50 @@ dependency, a new route or section, a convention bent, a bug whose cause is wort
 remembering. Routine commits do not need an entry.
 
 For *why* the conventions are what they are, see [[decisions-log]].
+
+---
+
+## 2026-09-23 (2) — Previous brand artwork removed; text placeholders in its place
+
+Every trace of the template's original brand and Figma file name is gone: the
+logo, hero wordmark plate, favicons, Android/Apple icons and share image were
+all drawn from that artwork, and have been deleted.
+
+**Added**
+- `src/components/ui/brand-mark.tsx` — `<BrandMark>`, the site name as an
+  inline-SVG text logo (see [[components/ui]]). Name and lines in `src/lib/brand.ts`.
+- `src/app/icon.tsx`, `apple-icon.tsx`, `opengraph-image.tsx` + drawing code
+  in `src/utils/seo/brand-image.tsx` — favicon, touch icon and share card
+  generated at build time from `siteConfig` (see [[seo-metadata]], ADR-0048).
+
+**Changed**
+- Header, mobile menu, footer and preloader render `<BrandMark>` instead of
+  `logo-mark.png`; the `logo` fields are gone from `HeroContent` /
+  `FooterContent` and the `logo` props from `HeroHeader` / `HeroMenu`.
+- `HeroWordmark` keeps its torch and sheen but draws `<BrandMark>` instead of
+  the image plate; `backdrop` is gone from `HeroContent` and `HeroStage`.
+- `generate-page-metadata.ts` no longer declares icons, and emits `og:image`
+  only for a page-supplied `ogImage`; `siteConfig.ogImage` removed.
+  `manifest.json` and the Organization JSON-LD `logo` point at `/icon`.
+- `HOW_TO_USE.md` rewritten for this project; `DESIGN-MAP.md` Figma links no
+  longer carry the file's name, and its notes on the removed plates are gone.
+
+**Removed**
+- `public/` favicons, `android-icon-*`, `apple-icon-180x180.png`,
+  `open-graph.png`; `src/app/favicon.ico`; `public/assets/hero/hero-wordmark*.png`,
+  `hero-logo.png`; `public/assets/ui/logo-mark.png`.
+
+---
+
+## 2026-09-23 — Renamed to "Your Online Store"; Vercel-ready site URL
+
+**Changed**
+- `package.json` name → `your-online-store`; `siteConfig.name` / `author`,
+  `public/manifest.json` and the footer copyright → "Your Online Store".
+- `src/env.ts` — when `NEXT_PUBLIC_SITE_URL` is unset, the site URL falls back
+  to `https://$NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL` (a Vercel system env
+  var), so canonicals, OG tags and the sitemap no longer point at localhost on
+  Vercel. Set `NEXT_PUBLIC_SITE_URL` explicitly once a custom domain is live.
 
 ---
 
@@ -1424,9 +1468,8 @@ backstop so a failed model can never strand the page, a `<noscript>` rule for
 where scripts do not run, and it lifts by itself — verified caught mid-flight at
 "LOADING 077" and gone once settled.
 
-**Metadata, icons and the share card**, generated from the logo. The brand is
-ARTEFAKT — the footer's copyright and the wordmark under the mark both say so;
-"Get Layers" is the Figma file. Two things worth noting: the supplied logo is
+**Metadata, icons and the share card**, generated from the logo. Two things
+worth noting: the supplied logo is
 opaque, so compositing it anywhere left a black plate around the mark — the alpha
 is rebuilt from its own luminance and that transparent version is now what the
 header, footer, preloader and every icon use. And the metadata generator declared
@@ -2290,7 +2333,7 @@ The flat jacket render is gone; the hero now renders `hero-jacket.glb` live on
 |-----|-----|---------------------|
 | `hero-mountains.png` | `hero-wordmark.png` | The **brand wordmark**, not mountains — the plate behind the product. Now the supplied 4× **chrome** export (5028×2684), which is the artwork the frame actually uses. |
 | — | `hero-wordmark-dark.png` | Dark finish of the same wordmark. Not the frame's plate; unused. |
-| `hero-logo.png` | `hero-logo.png` | Restored: the 75×30 header mark **with** its ARTEFAKT line, re-exported from Figma at 4×. It had been overwritten by a wordmark drop. |
+| `hero-logo.png` | `hero-logo.png` | Restored: the 75×30 header mark **with** its name line, re-exported from Figma at 4×. It had been overwritten by a wordmark drop. |
 | `hero-jacket.png` | *(deleted)* | Superseded by the model. |
 
 **Worth remembering**
@@ -2384,7 +2427,7 @@ unscaled layout on first paint. See [[decisions-log]] ADR-0024.
 
 ## 2026-08-20 — Hero section built from Figma
 
-Built the Get Layers hero (Figma `WINXFW2nTM7zYwd5dGgm1T`, node `902:304`,
+Built the hero (Figma `WINXFW2nTM7zYwd5dGgm1T`, node `902:304`,
 1440×800) into the home view. Node IDs are recorded in `DESIGN-MAP.md`.
 
 **Added**

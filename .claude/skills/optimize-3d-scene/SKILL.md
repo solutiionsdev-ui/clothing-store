@@ -5,7 +5,7 @@ description: Optimise a three.js **or raw WebGL** scene in a project for mobile 
 
 # Optimise a 3D scene
 
-Every project in `getlayers-projects/` that carries a three.js scene pays the
+Every project that carries a three.js scene pays the
 same tax: a phone renders the same fragments as a workstation, the first frame
 after a shader appears compiles mid-scroll, and the render loop keeps running
 behind three sections of copy nobody is looking at. This skill fixes those in a

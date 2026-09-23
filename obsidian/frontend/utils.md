@@ -1,6 +1,6 @@
 ---
 tags: [frontend, stable]
-updated: 2026-05-21
+updated: 2026-09-23
 ---
 
 # Catalog — Utilities
@@ -62,6 +62,21 @@ used internally by the scroll/animation system. Marked `@ts-nocheck`. `#do-not-m
 
 `getSiteStructuredData()` — builds the `Organization` + `WebSite` JSON-LD graph
 rendered by the root layout. See [[seo-metadata]].
+
+## `seo/brand-image.tsx`
+
+`renderBrandIcon(size)` — a square monogram icon; `renderBrandCard(width,
+height)` — the share card (stacked name over the description). Both return a
+`next/og` `ImageResponse` drawn from `siteConfig`, and back the
+`icon.tsx`, `apple-icon.tsx` and `opengraph-image.tsx` file conventions in
+`src/app/`. Placeholders until real artwork exists. See [[seo-metadata]] and
+[[decisions-log]] ADR-0048.
+
+> [!note] Brand name
+> The name and how the text logo sets it live in `src/lib/brand.ts`
+> (`brandName`, `brandWordmark`), re-exported by `siteConfig`. Kept apart so
+> client components (`BrandMark`) can read it without pulling in the validated
+> env and zod.
 
 ## Adding a util
 

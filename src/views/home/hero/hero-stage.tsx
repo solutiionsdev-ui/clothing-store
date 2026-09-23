@@ -1,9 +1,4 @@
 import { HeroWordmark } from "./hero-wordmark";
-import type { HeroImage } from "./hero.types";
-
-export interface HeroStageProps {
-  backdrop: HeroImage;
-}
 
 /**
  * Wordmark plate opacity.
@@ -13,11 +8,8 @@ export interface HeroStageProps {
  * on the client's call so the wordmark actually reads; its brightest strokes now
  * land around 63. Recorded in DESIGN-MAP.md.
  *
- * The number only means anything alongside the right artwork: this depends on
- * the plate being the *chrome* export, whose strokes peak at RGB 251. The dark
- * variant of the same wordmark (`hero-wordmark-dark.png`) peaks at 20 and is
- * invisible at any of these values. If the plate ever looks like it vanished,
- * check which file is wired up before touching this number.
+ * The plate is the site name as a text mark (`BrandMark`) in the full content
+ * colour, so this value is the whole of its dimming.
  */
 const BACKDROP_OPACITY = 0.2;
 
@@ -63,7 +55,7 @@ export const PRODUCT_BOX = "aspect-4/3 md:aspect-16/9";
  * jacket. The canvas is cleared to alpha 0, so the plate shows through wherever
  * the product and the lattice do not cover.
  */
-export const HeroStage = ({ backdrop }: HeroStageProps) => (
+export const HeroStage = () => (
   <div
     // `data-hero-stage` is how the product canvas finds this box. Below the
     // frame the canvas is positioned against the travel region while this box
@@ -73,6 +65,6 @@ export const HeroStage = ({ backdrop }: HeroStageProps) => (
     data-hero-stage
     className={`pointer-events-none relative z-0 w-full lg:absolute lg:inset-0 lg:aspect-auto lg:w-auto ${PRODUCT_BOX}`}
   >
-    <HeroWordmark plate={backdrop} opacity={BACKDROP_OPACITY} />
+    <HeroWordmark opacity={BACKDROP_OPACITY} />
   </div>
 );

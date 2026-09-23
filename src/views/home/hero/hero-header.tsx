@@ -1,27 +1,29 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 
 import { Spring } from "@/components/animation/springs/spring";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { ScrambleText } from "@/components/ui/scramble-text";
 
 import { HeroMenu } from "./hero-menu";
 import { HeroNavEntry } from "./hero-nav-item";
 
 import { HERO_REVEAL } from "./hero.motion";
-import type { HeroImage, HeroLink, HeroNavItem } from "./hero.types";
+import type { HeroLink, HeroNavItem } from "./hero.types";
 
 export interface HeroHeaderProps {
-  logo: HeroImage;
   nav: HeroNavItem[];
   cart: HeroLink;
 }
 
-/** The logo's box. Half again as big below the frame, where the header has
- * room for it and a 24px mark reads as a smudge; the frame's own 30×75 at `lg`.
- * The 0.4 ratio is the artwork's, and is held on both. */
-const LOGO_BOX = "block h-11 w-27.5 lg:h-7.5 lg:w-18.75";
+/** The logo's box — the frame's 30px row at `lg`, a 44px tap target below it.
+ * The text mark is sized by its own height inside it (`LOGO_MARK`). */
+const LOGO_BOX = "flex h-11 items-center lg:h-7.5";
+
+/** The text logo's cap height — larger below the frame, where the header has
+ * room for it. */
+export const LOGO_MARK = "h-4 w-auto lg:h-3.5";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hero-content";
@@ -33,7 +35,7 @@ const FOCUS_RING =
  * centres the nav on the canvas while the logo and cart sit against the 40px
  * margins, which a `justify-between` row cannot reproduce.
  */
-export const HeroHeader = ({ logo, nav, cart }: HeroHeaderProps) => (
+export const HeroHeader = ({ nav, cart }: HeroHeaderProps) => (
   <Spring
     tag="header"
     mode="once"
@@ -49,14 +51,7 @@ export const HeroHeader = ({ logo, nav, cart }: HeroHeaderProps) => (
       href="/"
       className={`${LOGO_BOX} order-1 max-lg:tap-area lg:absolute lg:top-6 lg:left-10 ${FOCUS_RING}`}
     >
-      <Image
-        src={logo.src}
-        alt={logo.alt}
-        width={logo.width}
-        height={logo.height}
-        priority
-        className="h-full w-full object-contain"
-      />
+      <BrandMark variant="inline" className={LOGO_MARK} />
     </Link>
 
     <nav
@@ -94,7 +89,12 @@ export const HeroHeader = ({ logo, nav, cart }: HeroHeaderProps) => (
     </Link>
 
     <div className="order-2 ml-auto lg:hidden">
-      <HeroMenu logo={logo} nav={nav} cart={cart} logoClassName={LOGO_BOX} />
+      <HeroMenu
+        nav={nav}
+        cart={cart}
+        logoClassName={LOGO_BOX}
+        logoMarkClassName={LOGO_MARK}
+      />
     </div>
   </Spring>
 );

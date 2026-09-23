@@ -21,7 +21,7 @@ const onest = Onest({
   display: "swap",
 });
 
-/** IBM 3270 — the display face of the Figma "Get Layers" frame. */
+/** IBM 3270 — the display face of the Figma hero frame. */
 const ibm3270 = localFont({
   src: "./fonts/3270-Regular.otf",
   variable: "--font-3270",

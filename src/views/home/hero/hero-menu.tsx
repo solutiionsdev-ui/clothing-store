@@ -1,19 +1,20 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { BrandMark } from "@/components/ui/brand-mark";
 import { ScrambleText } from "@/components/ui/scramble-text";
 
-import type { HeroImage, HeroLink, HeroNavItem } from "./hero.types";
+import type { HeroLink, HeroNavItem } from "./hero.types";
 
 export interface HeroMenuProps {
-  logo: HeroImage;
   nav: HeroNavItem[];
   cart: HeroLink;
   /** The logo's own box, so the panel's copy sits exactly over the page's. */
   logoClassName: string;
+  /** The text mark's size inside that box. */
+  logoMarkClassName: string;
 }
 
 const FOCUS_RING =
@@ -40,7 +41,12 @@ const TRANSITION = "transition duration-[var(--duration-fast)] ease-entrance";
  * somewhere to put it; here there is room on the screen, and a second tap to
  * reach four links is a cost with nothing bought.
  */
-export const HeroMenu = ({ logo, nav, cart, logoClassName }: HeroMenuProps) => {
+export const HeroMenu = ({
+  nav,
+  cart,
+  logoClassName,
+  logoMarkClassName,
+}: HeroMenuProps) => {
   const [open, setOpen] = useState(false);
 
   // The page behind a full-screen panel must not scroll under it. On `html`
@@ -94,13 +100,7 @@ export const HeroMenu = ({ logo, nav, cart, logoClassName }: HeroMenuProps) => {
           tabIndex={open ? undefined : -1}
           className={`${logoClassName} ${FOCUS_RING}`}
         >
-          <Image
-            src={logo.src}
-            alt={logo.alt}
-            width={logo.width}
-            height={logo.height}
-            className="h-full w-full object-contain"
-          />
+          <BrandMark variant="inline" className={logoMarkClassName} />
         </Link>
 
         <nav aria-label="Primary" className="mt-10 flex-1 overflow-y-auto">

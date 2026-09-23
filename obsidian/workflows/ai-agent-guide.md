@@ -15,7 +15,7 @@ Rules of engagement for AI agents (Claude Code, Cursor) working in this repo.
 > relevant spec before writing code. Heed deprecation notices.**
 
 > [!tip] Where to start
-> Route `/` is built: `src/views/home/` renders the Get Layers hero from Figma
+> Route `/` is built: `src/views/home/` renders the hero from Figma
 > node `902:304` — node IDs are in `DESIGN-MAP.md`. New sections go beside the
 > view in `src/views/home/`; follow [[new-page]].
 

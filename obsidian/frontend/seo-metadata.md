@@ -13,7 +13,8 @@ metadata generator, `robots.ts`, `sitemap.ts`, and the JSON-LD helper all read
 from it. **Update the placeholder values per project.** `#todo`
 
 `siteConfig.url` comes from `NEXT_PUBLIC_SITE_URL` (see [[environment-variables]]),
-falling back to `http://localhost:3000`.
+falling back to `https://$NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL` on Vercel, else
+`http://localhost:3000`.
 
 ## Metadata generator
 
@@ -68,15 +69,18 @@ PageSpeed, HeadlessChrome, GTmetrix, Pingdom, Bingbot, Yandexbot.
 
 ## Static assets
 
-The `public/` **root** holds meta/PWA/SEO assets — favicons (multiple sizes),
-Android/Apple icons, `manifest.json`, `browserconfig.xml`, `open-graph.png`.
-Site **content** assets (images, videos) go under `public/assets/<section>/` —
-see [[folder-structure]].
+The favicon, Apple touch icon and default share card are **generated at build
+time** from `siteConfig` by the `icon.tsx`, `apple-icon.tsx` and
+`opengraph-image.tsx` file conventions in `src/app/` (drawing code in
+`src/utils/seo/brand-image.tsx`). They are text placeholders — the monogram and
+the stacked name — until real artwork exists; to use artwork, replace those
+files with static images of the same names. Next injects the `<link rel=icon>`
+and `og:image` tags itself, so `generate-page-metadata.ts` declares no icons,
+and emits `og:image` only when a page passes its own `ogImage`.
 
-> [!note] `#todo`
-> `open-graph.png` is currently **900×600** (the metadata declares the same, so
-> there is no mismatch). The ideal OG size is **1200×630** — swap in a
-> correctly-sized asset and update the dimensions in `generate-page-metadata.ts`.
+The `public/` **root** holds `manifest.json` (its icons point at `/icon` and
+`/apple-icon`). Site **content** assets (images, videos) go under
+`public/assets/<section>/` — see [[folder-structure]].
 
 ## Related
 
