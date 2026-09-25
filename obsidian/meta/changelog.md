@@ -1,6 +1,6 @@
 ---
 tags: [meta, changelog]
-updated: 2026-09-23
+updated: 2026-09-25
 ---
 
 # Changelog
@@ -13,6 +13,16 @@ dependency, a new route or section, a convention bent, a bug whose cause is wort
 remembering. Routine commits do not need an entry.
 
 For *why* the conventions are what they are, see [[decisions-log]].
+
+---
+
+## 2026-09-25 — Renamed to "Fashion Store"
+
+**Changed**
+- `src/lib/brand.ts` — `brandName` → "Fashion Store"; wordmark → `FASHION STORE`
+  inline, `FASHION` / `STORE` stacked. The favicon monogram follows as "FS".
+- `package.json` name → `fashion-store`; `public/manifest.json`, the footer
+  copyright and `HOW_TO_USE.md` → "Fashion Store".
 
 ---
 

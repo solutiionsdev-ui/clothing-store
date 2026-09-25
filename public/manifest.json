@@ -1,6 +1,6 @@
 {
-  "name": "Your Online Store",
-  "short_name": "Online Store",
+  "name": "Fashion Store",
+  "short_name": "Fashion Store",
   "description": "Technical jackets for changing weather, movement and everyday use.",
   "start_url": "/",
   "display": "standalone",

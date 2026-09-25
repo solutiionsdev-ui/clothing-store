@@ -1,6 +1,6 @@
-# Your Online Store — source
+# Fashion Store — source
 
-This is the complete source for **Your Online Store**. It's a Next.js app —
+This is the complete source for **Fashion Store**. It's a Next.js app —
 the full project tree, minus installed dependencies and any local secrets.
 
 ## Run it as-is

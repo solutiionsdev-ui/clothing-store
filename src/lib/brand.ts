@@ -7,7 +7,7 @@
  */
 
 /** The project name, used for metadata, the manifest and the footer. */
-export const brandName = "Your Online Store";
+export const brandName = "Fashion Store";
 
 /**
  * The name as `BrandMark` sets it — one line for the header, footer and
@@ -15,6 +15,6 @@ export const brandName = "Your Online Store";
  * until real logo artwork exists.
  */
 export const brandWordmark = {
-  inline: ["YOUR ONLINE STORE"],
-  stacked: ["YOUR ONLINE", "STORE"],
+  inline: ["FASHION STORE"],
+  stacked: ["FASHION", "STORE"],
 } as const;

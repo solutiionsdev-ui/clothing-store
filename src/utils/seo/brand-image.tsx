@@ -14,7 +14,7 @@ import { siteConfig } from "@/lib/site";
 /** The site's ink on its theme colour — the page's own white on black. */
 const FOREGROUND = "#ffffff";
 
-/** "Your Online Store" → "YOS" — the only form of the name a favicon can hold. */
+/** "Fashion Store" → "FS" — the only form of the name a favicon can hold. */
 const monogram = siteConfig.name
   .split(/\s+/)
   .map((word) => word.charAt(0))

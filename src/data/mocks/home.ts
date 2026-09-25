@@ -420,7 +420,7 @@ export const homeFooter: FooterContent = {
     placeholder: "Your e-mail",
     consent: "I AGREE TO RECEIVE UPDATES.",
   },
-  copyright: "© 2026 YOUR ONLINE STORE. ALL RIGHTS RESERVED.",
+  copyright: "© 2026 FASHION STORE. ALL RIGHTS RESERVED.",
   social: [
     { label: "INSTAGRAM", href: "#" },
     { label: "YOUTUBE", href: "#" },
